@@ -10,6 +10,8 @@ var server = require('http').Server(app);
 
 var workers = [];
 var PORT = 8002;
+var serverName = "gymalaya.shubapp.com";
+//var serverName = "lcalhost"+port;
 
 function initConfig(){
 	process.on('uncaughtException',function(err){
@@ -21,12 +23,14 @@ function initConfig(){
 		extended: true
 	}));
 	app.use(bodyParser.json());
+	app.use(allowCrossDomain);
 	app.use(multer({ 
 		dest: './server/uploads/',
 		rename: function (fieldname, filename) {
 		  	return filename;
 		}
 	}));
+	app.use(express.static(__dirname + "/../../gymalaya-app/gymalaya/www"));
 	app.use(cookieParser());
 	app.use(cookieSession({secret:'TeachersSecret!'}));
 	app.use(passport.initialize());
@@ -40,6 +44,14 @@ function initConfig(){
 
 	console.log('Server running, listening on port', process.env.clusterPort);
 }
+
+function allowCrossDomain(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', "http://" + serverName);
+    res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    next();
+};
+
 
 // Code to run in the master process
 if (cluster.isMaster) {
