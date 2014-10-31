@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 
 var workoutSchema = mongoose.Schema({
-	user 				:[{type:String, ref:'User'}],
+	user 				:{type:String, ref:'User'},
 	name				:String,
 	creation			:{type: Date, required: true, default: Date.now},
 	end					:Date

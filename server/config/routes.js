@@ -41,7 +41,7 @@ module.exports = function(app, passport){
 	});
 
 	app.get('/exercises/:workoutId', auth.isLoggedIn, function(req, res) {
-		Exercise.find({workout:req.patams.workoutId})
+		Exercise.find({workout:req.params.workoutId})
 		.exists('endDate', false)
 		.exec(function(err, exercises){
 			res.json(exercises);
@@ -58,6 +58,7 @@ module.exports = function(app, passport){
 
 	app.post('/workout', auth.isLoggedIn, function(req, res) {
 		var workout = new Workout(req.body);
+		workout.user=req.user._id;
 		workout.save(function(err,savedWorkout){
 			if (err) {res.json(err)}
 			res.json(savedWorkout);
@@ -83,8 +84,9 @@ module.exports = function(app, passport){
 		});
 	});
 
-	app.delete('/workout', auth.isLoggedIn, function(req, res) {
-		Workout.findById(req.body._id,function(err, workout){
+	app.delete('/workout/:workoutId', auth.isLoggedIn, function(req, res) {
+		Workout.findById(req.params.workoutId,function(err, workout){
+			if (err) {res.json(err)}
 			workout.end = new Date();
 			workout.save(function(err){
 				if (err) {res.json(err)}
@@ -93,8 +95,9 @@ module.exports = function(app, passport){
 		});
 	});
 
-	app.delete('/exercise', auth.isLoggedIn, function(req, res) {
-		Exercise.findById(req.body._id,function(err, exercise){
+	app.delete('/exercise/:exerciseId', auth.isLoggedIn, function(req, res) {
+		Exercise.findById(req.params.exerciseId,function(err, exercise){
+			if (err) {res.json(err)}
 			exercise.endDate = new Date();
 			exercise.save(function(err){
 				if (err) {res.json(err)}
@@ -105,6 +108,7 @@ module.exports = function(app, passport){
 
 	app.put('/workout/:_id', auth.isLoggedIn, function(req, res) {
 		Workout.findById(req.params._id,function(err, workout){
+			if (err) {res.json(err)}
 			workout.name = req.body.name;
 			workout.save(function(err){
 				if (err) {res.json(err)}
@@ -115,6 +119,7 @@ module.exports = function(app, passport){
 
 	app.put('/exercise/:_id', auth.isLoggedIn, function(req, res) {
 		Exercise.findById(req.params._id,function(err, exercise){
+			if (err) {res.json(err)}
 			exercise.name = req.body.name;
 			exercise.save(function(err){
 				if (err) {res.json(err)}

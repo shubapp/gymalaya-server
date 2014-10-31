@@ -16,4 +16,6 @@ db.mgroups.insert({_id:"Legs"});
 db.mgroups.insert({_id:"Front Hand"});
 db.mgroups.insert({_id:"Abs"});
 
-db.workout.insert({user:"deanshub@gmail.com",name:"A",creation:new Date(),end:new Date()});
+db.workouts.insert({_id:docKey1,user:"deanshub@gmail.com",name:"A",creation:new Date()});
+
+db.exercises.insert({name:"upper pully",workout:docKey1,weight:80,sets:3,repetitions:10,startDate:new Date(),mgroup:"Back"});
