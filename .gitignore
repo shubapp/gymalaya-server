@@ -1,0 +1,9 @@
+*.7z
+*.zip
+/node_modules
+todos.txt
+/server/uploads
+dbConnect.bat
+exportData.bat
+resetData.bat
+/server/config/dbcon.js
