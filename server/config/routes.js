@@ -97,7 +97,7 @@ module.exports = function(app, passport){
 
 	app.delete('/exercise/:exerciseId', auth.isLoggedIn, function(req, res) {
 		Exercise.findById(req.params.exerciseId,function(err, exercise){
-			if (err) {res.json(err)}
+			if (err) {res.json(err);}
 			exercise.endDate = new Date();
 			exercise.save(function(err){
 				if (err) {res.json(err)}
@@ -108,7 +108,7 @@ module.exports = function(app, passport){
 
 	app.put('/workout/:_id', auth.isLoggedIn, function(req, res) {
 		Workout.findById(req.params._id,function(err, workout){
-			if (err) {res.json(err)}
+			if (err) {res.json(err);}
 			workout.name = req.body.name;
 			workout.save(function(err){
 				if (err) {res.json(err)}
@@ -119,11 +119,19 @@ module.exports = function(app, passport){
 
 	app.put('/exercise/:_id', auth.isLoggedIn, function(req, res) {
 		Exercise.findById(req.params._id,function(err, exercise){
-			if (err) {res.json(err)}
-			exercise.name = req.body.name;
+			if (err) {res.json(err);}
+			exercise.endDate = new Date();
+
 			exercise.save(function(err){
-				if (err) {res.json(err)}
-				res.json({result:true});
+				if (err) {res.json(err);}
+				var newExercise = new Exercise(req.body);
+				newExercise.startDate = new Date();
+				newExercise._id=null;
+
+				newExercise.save(function(err, savedExercise){
+					if (err) {res.json(err);}
+					res.json(savedExercise);
+				});
 			});
 		});
 	});
