@@ -58,17 +58,17 @@ module.exports = function(app, passport){
 
 	app.post('/workout', auth.isLoggedIn, function(req, res) {
 		var workout = new Workout(req.body);
-		workout.save(function(err){
+		workout.save(function(err,savedWorkout){
 			if (err) {res.json(err)}
-			res.json({result:true});
+			res.json(savedWorkout);
 		});
 	});
 
 	app.post('/exercise', auth.isLoggedIn, function(req, res) {
 		var exercise = new Exercise(req.body);
-		exercise.save(function(err){
+		exercise.save(function(err, savedExercise){
 			if (err) {res.json(err)}
-			res.json({result:true});
+			res.json(savedExercise);
 		});
 	});
 
@@ -77,9 +77,9 @@ module.exports = function(app, passport){
 		var originalname = req.files.file.originalname;
 		var indicator = new Indicator(req.body);
 		indicator.pic = originalname;
-		indicator.save(function(err){
+		indicator.save(function(err, savedIndicator){
 			if (err) {res.json(err)}
-			res.json({result:true});
+			res.json(savedIndicator);
 		});
 	});
 
