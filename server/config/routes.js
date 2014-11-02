@@ -1,3 +1,4 @@
+var fs				= require('fs');
 var auth			= require('./auth');
 var User			= require('../models/user.js');
 var Workout			= require('../models/workout.js');
@@ -68,25 +69,26 @@ module.exports = function(app, passport){
 	app.post('/exercise', auth.isLoggedIn, function(req, res) {
 		var exercise = new Exercise(req.body);
 		exercise.save(function(err, savedExercise){
-			if (err) {res.json(err)}
+			if (err) {res.json(err);}
 			res.json(savedExercise);
 		});
 	});
 
 	app.post('/indicator', auth.isLoggedIn, function(req, res) {
-		// TODO: file upload + handle file name
-		var originalname = req.files.file.originalname;
-		var indicator = new Indicator(req.body);
-		indicator.pic = originalname;
-		indicator.save(function(err, savedIndicator){
-			if (err) {res.json(err)}
-			res.json(savedIndicator);
+		var nowTime = new Date();
+		fs.writeFile(__dirname + "/server/uploads" nowTime.getTime()+'.jpg', req.body.pic, function(err) {
+			if (err) {res.json(err);}
+			var indicator = new Indicator({user:req.user._id,pic:nowTime.getTime()+'.jpg',weight:req.body.weight});
+			indicator.save(function(err, savedIndicator){
+				if (err) {res.json(err)}
+				res.json(savedIndicator);
+			});
 		});
 	});
 
 	app.delete('/workout/:workoutId', auth.isLoggedIn, function(req, res) {
 		Workout.findById(req.params.workoutId,function(err, workout){
-			if (err) {res.json(err)}
+			if (err) {res.json(err);}
 			workout.end = new Date();
 			workout.save(function(err){
 				if (err) {res.json(err)}
