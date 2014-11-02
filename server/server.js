@@ -25,10 +25,7 @@ function initConfig(){
 	app.use(bodyParser.json());
 	app.use(allowCrossDomain);
 	app.use(multer({ 
-		dest: './server/uploads/',
-		rename: function (fieldname, filename) {
-		  	return filename;
-		}
+		dest: './server/uploads/'
 	}));
 	app.use(express.static(__dirname + "/../../gymalaya-app/gymalaya/www"));
 	app.use(cookieParser());

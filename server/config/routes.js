@@ -76,13 +76,12 @@ module.exports = function(app, passport){
 
 	app.post('/indicator', auth.isLoggedIn, function(req, res) {
 		var nowTime = new Date();
-		fs.writeFile(__dirname + "/server/uploads" +nowTime.getTime()+'.jpg', req.body.pic, function(err) {
-			if (err) {res.json(err);}
-			var indicator = new Indicator({user:req.user._id,pic:nowTime.getTime()+'.jpg',weight:req.body.weight});
-			indicator.save(function(err, savedIndicator){
-				if (err) {res.json(err)}
-				res.json(savedIndicator);
-			});
+		var originalname = req.files.file.name;
+
+		var indicator = new Indicator({user:req.user._id,pic:originalname,weight:req.body.weight});
+		indicator.save(function(err, savedIndicator){
+			if (err) {res.json(err)}
+			res.json(savedIndicator);
 		});
 	});
 
