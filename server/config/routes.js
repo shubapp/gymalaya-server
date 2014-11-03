@@ -75,7 +75,6 @@ module.exports = function(app, passport){
 	});
 
 	app.post('/indicator', auth.isLoggedIn, function(req, res) {
-		var nowTime = new Date();
 		var originalname = req.files.file.name;
 
 		var indicator = new Indicator({user:req.user._id,pic:originalname,weight:req.body.weight});
