@@ -13,5 +13,10 @@ var exerciseSchema = mongoose.Schema({
 	mgroup				:{type:String, ref:'Mgroup'}
 });
 
+exerciseSchema.virtual('strength').get(function () {
+  return this.sets * (this.weight/(1.0278 - (0.0278*this.repetitions)));
+});
+exerciseSchema.set('toJSON', { virtuals: true });
+
 // create the model for exercise and expose it to our app
 module.exports = mongoose.model('Exercise', exerciseSchema, 'exercises');

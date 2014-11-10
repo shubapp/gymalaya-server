@@ -1,4 +1,6 @@
 var fs				= require('fs');
+var path			= require('path');
+var async			= require('async');
 var auth			= require('./auth');
 var User			= require('../models/user.js');
 var Workout			= require('../models/workout.js');
@@ -19,6 +21,9 @@ module.exports = function(app, passport){
 		}) (req, res);
 	});
 
+	app.post('/loggedin',function(req,res) {
+		res.json(req.isAuthenticated() ? req.user : {err:"Not logged in"});
+	});
 
 	app.get('/logout', function(req, res) {
 		req.logout();
@@ -134,5 +139,148 @@ module.exports = function(app, passport){
 				});
 			});
 		});
+	});
+
+	/**********************************************************************************/
+
+	app.get('/api/exercises', auth.isLoggedIn, function(req, res) {
+		Workout.find({user:req.user._id})
+		.exists('end', false)
+		.exec(function(err, workouts){
+			var workoutIds=[];
+			for (var i = 0; i < workouts.length; i++) {
+				workoutIds.push(workouts[i]._id);
+			}
+
+			Exercise.find({})
+			.where('workout').in(workoutIds)
+			.exists('endDate', false)
+			.populate('workout','name')
+			.exec(function(err, exercises){
+				res.json(exercises);
+			});
+		});
+	});
+
+	app.get('/api/exercise/:name', auth.isLoggedIn, function(req, res) {
+		Workout.find({user:req.user._id})
+		.exists('end', false)
+		.exec(function(err, workouts){
+			var workoutIds=[];
+			for (var i = 0; i < workouts.length; i++) {
+				workoutIds.push(workouts[i]._id);
+			}
+
+			Exercise.find({name:req.params.name})
+			.where('workout').in(workoutIds)
+			.sort('startDate')
+			.exec(function(err, exercises){
+				res.json(exercises);
+			});		
+		});
+	});
+	
+	app.get('/api/mgroup/:mgroup', auth.isLoggedIn, function(req, res) {
+		Workout.find({user:req.user._id})
+		.exists('end', false)
+		.exec(function(err, workouts){
+			var workoutIds=[];
+			for (var i = 0; i < workouts.length; i++) {
+				workoutIds.push(workouts[i]._id);
+			}
+
+			Exercise.find({mgroup:req.params.mgroup})
+			.where('workout').in(workoutIds)
+			.sort('startDate')
+			.exec(function(err, exercises){
+				var queries =[];
+				var results=[];
+				for (var i = 0; i < exercises.length; i++) {
+					(function(i){
+						queries.push(function(cb){
+							Exercise.find({mgroup:req.params.mgroup})
+							.where('startDate').lte(exercises[i].startDate)
+							.or([{endDate:null},{endDate:{$gt:exercises[i].startDate}}])
+							.exec(function(err, exMuscles){
+								var totalStrength=0;
+								for (var j = 0; j < exMuscles.length; j++) {
+									totalStrength+=exMuscles[j].strength;
+								}
+
+								if (exMuscles.length>0){
+									totalStrength = totalStrength/exMuscles.length;
+								}
+
+								results.push({date:exercises[i].startDate,strength:totalStrength});
+								cb(err);
+							});
+						});
+					})(i);
+				}
+
+				async.parallel(queries,function(err){
+					if (err){
+						res.json(err);
+					}
+					res.json(results);
+				})
+			});	
+		});	
+	});
+
+	app.get('/api/totalWorkout', auth.isLoggedIn, function(req, res) {
+		Workout.find({user:req.user._id})
+//		.exists('end', false)
+		.exec(function(err, workouts){
+			var workoutIds=[];
+			for (var i = 0; i < workouts.length; i++) {
+				workoutIds.push(workouts[i]._id);
+			}
+
+			Exercise.find({})
+			.where('workout').in(workoutIds)
+			.sort('startDate')
+			.exec(function(err, exercises){
+				var queries =[];
+				var results=[];
+				for (var i = 0; i < exercises.length; i++) {
+					(function(i){
+						queries.push(function(cb){
+							Exercise.find({})
+							.where('startDate').lte(exercises[i].startDate)
+							.or([{endDate:null},{endDate:{$gt:exercises[i].startDate}}])
+							.exec(function(err, exMuscles){
+								var totalStrength=0;
+								for (var j = 0; j < exMuscles.length; j++) {
+									totalStrength+=exMuscles[j].strength;
+								}
+
+								if (exMuscles.length>0){
+									totalStrength = totalStrength/exMuscles.length;
+								}
+
+								results.push({date:exercises[i].startDate,strength:totalStrength});
+								cb(err);
+							});
+						});
+					})(i);
+				}
+
+				async.parallel(queries,function(err){
+					if (err){
+						res.json(err);
+					}
+					res.json(results);
+				})
+			});	
+		});	
+	});
+
+	app.get('/uploads/:image', auth.isLoggedIn, function(req, res) {
+		res.sendFile(path.resolve(__dirname , "..","uploads" , req.params.image));
+	});
+
+	app.get('*', function(req, res) {
+		res.redirect('/#'+req.originalUrl);
 	});
 }

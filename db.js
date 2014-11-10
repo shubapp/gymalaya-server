@@ -7,6 +7,7 @@ docKey1 = new ObjectId();
 
 // Collections
 db.users.insert({_id:"deanshub@gmail.com",firstName:"Dean",lastName:"Shub",registration:new Date(),birthday:new Date()});
+db.users.insert({_id:"isyaniv@gmail.com",firstName:"Yaniv",lastName:"Israel",registration:new Date()})
 
 db.mgroups.insert({_id:"Chest"});
 db.mgroups.insert({_id:"Back Hand"});

@@ -25,7 +25,7 @@ function initConfig(){
 	app.use(multer({ 
 		dest: __dirname + '/uploads/'
 	}));
-	app.use(express.static(__dirname + "/../../gymalaya-app/gymalaya/www"));
+	app.use(express.static(__dirname + "/../public"));
 	app.use(cookieParser());
 	app.use(cookieSession({secret:'TeachersSecret!'}));
 	app.use(passport.initialize());

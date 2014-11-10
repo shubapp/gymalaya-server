@@ -1,0 +1,41 @@
+/*General css helpers*/
+.spacer {
+    margin-top: 40px;
+}
+.miniSpacer{
+	margin-top: 10px;
+}
+.midSpacer{
+	margin-top: 20px;
+}
+
+.categories{
+	font-size:2.5em;
+}
+
+.carouselHeight{
+	height:400px;
+}
+
+#logout{
+	position: absolute;
+	right: 10%;
+	top:15px;
+	z-index: 100;
+}
+
+.mgroup:hover{
+	background-color: #ddd;
+	cursor: pointer;
+}
+.mgroup.active{
+	background-color: gray;
+	cursor: default;
+}
+
+.tabLink{
+	cursor:pointer;
+}
+.tabLink.active{
+	cursor:default;
+}

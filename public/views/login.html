@@ -1,0 +1,29 @@
+<div class="container">
+	<div class="row spacer">
+		<div class="col-md-offset-2 col-md-8 text-center">
+			<h1>Gymalaya!</h1>
+		</div>
+	</div>
+	<form ng-sumbit="login(username, pass)">
+		<div class="row spacer">
+			<div class="col-md-offset-2 col-md-8">
+				<input placeholder="E-mail" name="email" ng-model="username" class="form-control" />
+			</div>
+		</div>
+		<div class="row miniSpacer">
+			<div class="col-md-offset-2 col-md-8">
+				<input placeholder="Password" type="password" name="password" ng-model="pass" class="form-control" />
+			</div>
+		</div>
+		<div class="row miniSpacer">
+			<div class="col-md-offset-2 col-md-8">
+				<button ng-click="login(username, pass)" class="btn btn-lg btn-primary btn-block">Submit</button>
+			</div>
+		</div>
+	</form>
+	<div class="row spacer" ng-class="{hidden:!errorMessage}">
+		<div class="col-md-offset-2 col-md-8 text-center">
+			<h2><span class="label label-danger">Error</span>{{errorMessage}}</h2>
+		</div>
+	</div>
+</div>

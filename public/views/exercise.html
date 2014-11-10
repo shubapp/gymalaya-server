@@ -1,0 +1,10 @@
+<div class="miniSpacer row">
+	<div class="col-xs-4 text-center">
+		<h3>Choose Exercise</h3>
+		<select class="form-control" ng-change="addExerciseGraph(choosenExercise)" ng-model="choosenExercise" ng-options="exercise.name group by exercise.workout.name for exercise in exercises">
+		</select>
+	</div>
+	<div class="col-xs-8">
+		<div id="exerciseGraph" ng-init="addExerciseGraph()"></div>
+	</div>
+</div>
