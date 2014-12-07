@@ -89,7 +89,6 @@ controllers.introCtrl = function ($scope, $location, $rootScope, $http, $timeout
 	$scope.initData = function(){
 		$http.get('/api/exercises'
 		).success(function(data) {
-			console.log(data);
 			$scope.exercises = data;
 		}).error(function(data, status, headers, config) {
 			console.log(data);
@@ -97,7 +96,6 @@ controllers.introCtrl = function ($scope, $location, $rootScope, $http, $timeout
 
 		$http.get('/indicators'
 		).success(function(data) {
-			console.log(data);
 			$scope.indicators = data;
 			$scope.addWeightGraph($scope.indicators);
 		}).error(function(data, status, headers, config) {
